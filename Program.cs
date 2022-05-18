@@ -34,6 +34,10 @@ Deve essere possibile effettuare la ricerca dei prestiti dato
  */
 
 //Da completare nell'esercizio
+//NB: la chiave di un dizionario non deve necessarimente essere una stringa. ome abbiamo visto nelle procedure di ordinamento,
+//questa può essere anche una tupl
+//Esempio:  var dict = new Dictionary<Tuple<int, double, string>, string>();
+
 
 namespace csharp_biblioteca
 {
@@ -154,19 +158,9 @@ namespace csharp_biblioteca
 
 
             //Tutti i metodi per inserire, cercare e fare tutto nel dizionario
-            public bool AggiungiUtente(Utente uUtente)
+            public void AggiungiUtente(Utente uUtente)
             {
-
-                string sChiaveUtente = sNome.lower() + ";" + sCognome.lower() + ";" + sMail.lower();
-                MyDictionary.Add(sChiaveUtente, uUtente);
-            }
-
-            public bool AggiungiUtente(string sNome, string sCognome, string sMail, ....)
-            {
-                //Costruite l'istanza di utente
-
-                //Aggiungi al dizionario.
-                string sChiaveUtente = sNome + ";" + sCognome + ";" + sMail;
+                string sChiaveUtente = uUtente.Nome.ToLower() + ";" + uUtente.Cognome.ToLower() + ";" + uUtente.Email.ToLower();
                 MyDictionary.Add(sChiaveUtente, uUtente);
             }
         }
@@ -272,38 +266,33 @@ namespace csharp_biblioteca
         class Libro : Documento
         {
             public int NumeroPagine { get; set; }
-
-            public Libro(string Codice, string Titolo, int Anno, string Settore, int NumeroPagine) : base(Codice, Titolo, Anno, Settore)
+            public Libro(string Codice, string Titolo, int Anno, string Settore, int NumeroPagine) 
+                : base(Codice, Titolo, Anno, Settore)
             {
                 this.NumeroPagine = NumeroPagine;
             }
-
             public override string ToString()
             {
-                return string.Format("{0}\nNumeroPagine:{1}",
-                    base.ToString(),
-                    this.NumeroPagine);
+                return string.Format("{0}\nNumeroPagine:{1}", base.ToString(), this.NumeroPagine);
             }
         }
 
         class DVD : Documento
         {
             public int Durata { get; set; }
-            public DVD(string Codice, string Titolo, int Anno, string Settore, int Durata) : base(Codice, Titolo, Anno, Settore)
+            public DVD(string Codice, string Titolo, int Anno, string Settore, int Durata) 
+                : base(Codice, Titolo, Anno, Settore)
             {
                 this.Durata = Durata;
             }
             public override string ToString()
             {
-                return string.Format("{0}\nDurata:{1}",
-                    base.ToString(),
-                    this.Durata);
+                return string.Format("{0}\nDurata:{1}", base.ToString(), this.Durata);
             }
         }
 
         class Autore : Persona
         {
-
             public Autore(string Nome, string Cognome) : base(Nome, Cognome)
             {
             }
