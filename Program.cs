@@ -47,6 +47,9 @@ namespace csharp_biblioteca
         {
             Biblioteca b = new Biblioteca("Civica");
 
+            //per prima cosa, se ci sono, leggo gli utenti da file!!!
+            //Questo potrebbe essere il posto migliore: b.RestoreUtenti(nomefile);
+
             Scaffale s1 = new Scaffale("S001");
             Scaffale s2 = new Scaffale("S002");
             Scaffale s3 = new Scaffale("S003");
@@ -84,6 +87,8 @@ namespace csharp_biblioteca
             Utente u1 = new Utente("Nome 1", "Cognome 1", "Telefono 1", "Email 1", "Password 1");
 
             b.Utenti.Add(u1);
+            //Questo potrebbe essere il posto migliore: b.SalvaUtenti(nomefile);
+
 
             Prestito p1 = new Prestito("P00001", new DateTime(2019, 1, 20), new DateTime(2019, 2, 20), u1, l1);
             Prestito p2 = new Prestito("P00002", new DateTime(2019, 3, 20), new DateTime(2019, 4, 20), u1, l2);
@@ -121,6 +126,9 @@ namespace csharp_biblioteca
                 Console.WriteLine(p.ToString());
                 Console.WriteLine("--------------------------");
             }
+
+            //Come ultima istruzione del programma oppure ogni volta che aggiungete un nuovo utente,
+            //salvate gli utenti su file.
 
         }
 
@@ -195,6 +203,14 @@ namespace csharp_biblioteca
                 this.Documenti = new List<Documento>();
                 this.Prestiti = new List<Prestito>();
                 this.Utenti = new List<Utente>();
+            }
+            public bool SaveUtenti(string filename)
+            {
+                //salva gli utenti sul file filename
+            }
+            public bool RestoreUtenti(string filename)
+            {
+                //Ricostruisce la lista degli utenti leggendo il file su cui sono stati scritti
             }
 
             public List<Documento> SearchByCodice(string Codice)
@@ -271,7 +287,8 @@ namespace csharp_biblioteca
         class Libro : Documento
         {
             public int NumeroPagine { get; set; }
-            public Libro(string Codice, string Titolo, int Anno, string Settore, int NumeroPagine) 
+            public Libro(string Codice, string Titolo, int Anno, 
+                         string Settore, int NumeroPagine) 
                 : base(Codice, Titolo, Anno, Settore)
             {
                 this.NumeroPagine = NumeroPagine;
