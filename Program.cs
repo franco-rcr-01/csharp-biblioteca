@@ -1,4 +1,6 @@
-﻿using System;
+﻿using System.Configuration;
+using System;
+
 /*
 Si vuole progettare un sistema per la gestione di una biblioteca.
 Gli utenti registrati al sistema, fornendo 
@@ -31,7 +33,7 @@ Il sistema per ogni prestito determina
 Deve essere possibile effettuare la ricerca dei prestiti dato 
 - nome e cognome di un utente.
 
- */
+*/
 
 //Da completare nell'esercizio
 //NB: la chiave di un dizionario non deve necessarimente essere una stringa. ome abbiamo visto nelle procedure di ordinamento,
@@ -43,18 +45,125 @@ namespace csharp_biblioteca
 {
     internal class Program
     {
+
+        static void ReadAllSettings()
+        {
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+
+                if (appSettings.Count == 0)
+                {
+                    Console.WriteLine("AppSettings is empty.");
+                }
+                else
+                {
+                    foreach (var key in appSettings.AllKeys)
+                    {
+                        Console.WriteLine("Key: {0} Value: {1}", key, appSettings[key]);
+                    }
+                }
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error reading app settings");
+            }
+        }
+
+        static string ReadSetting(string key)
+        {
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                string result = appSettings[key] ?? "Not Found";
+                return result;
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error reading app settings");
+                return "";
+            }
+        }
+
+        static void AddUpdateAppSettings(string key, string value)
+        {
+            try
+            {
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var settings = configFile.AppSettings.Settings;
+                if (settings[key] == null)
+                {
+                    settings.Add(key, value);
+                }
+                else
+                {
+                    settings[key].Value = value;
+                }
+                configFile.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error writing app settings");
+            }
+        }
+
         static void Main(string[] args)
         {
             Biblioteca b = new Biblioteca("Civica");
 
+
+
+#if NONDEFINITO
             //per prima cosa, se ci sono, leggo gli utenti da file!!!
             //Questo potrebbe essere il posto migliore: b.RestoreUtenti(nomefile);
+
+            //Lettore
+            List<string> ls = new List<string>();
+            if (File.Exists("pippo.dat"))
+            {
+                StreamReader sr = new StreamReader("pippo.dat");
+                string? letta;
+                while ((letta = sr.ReadLine()) != null)
+                {
+                    //manipolo la stringa per estrarre i valori che mi servono
+                    //e poi aggiungo alla lista
+                    ls.Add(letta);
+                }
+                sr.Close();
+            }
+
+            //Scrittore
+            //Prma di scrivere, se la lista è vuota, aggiungo qualcosa
+            if (ls.Count() == 0)
+            {
+                ls.Add("uno");
+                ls.Add("due");
+                ls.Add("tre");
+            }
+
+            //ora scrivo
+            StreamWriter sw = new StreamWriter("pippo.dat");
+            foreach(String s in ls)
+            {
+                sw.WriteLine(s);
+            }
+            sw.Close();
+            Environment.Exit(0);
+#endif
+
+            //AddUpdateAppSettings("chiave1", "valore1");
+            //AddUpdateAppSettings("chiave2", "11");
+            //AddUpdateAppSettings("violino", "12");
+            //AddUpdateAppSettings("pianoforte", "spinetta o affini");
+            ReadAllSettings();
+            Environment.Exit(0);
 
             Scaffale s1 = new Scaffale("S001");
             Scaffale s2 = new Scaffale("S002");
             Scaffale s3 = new Scaffale("S003");
 
-            #region "Libro 1"
+#region "Libro 1"
             Libro l1 = new Libro("ISBN1", "Titolo 1", 2009, "Storia", 220);
             Autore a1 = new Autore("Nome 1", "Cognome 1");
             Autore a2 = new Autore("Nome 2", "Cognome 2");
@@ -63,9 +172,9 @@ namespace csharp_biblioteca
             l1.Scaffale = s1;
 
             b.Documenti.Add(l1);
-            #endregion
+#endregion
 
-            #region "Libro 2"
+#region "Libro 2"
             Libro l2 = new Libro("ISBN2", "Titolo 2", 2009, "Storia", 130);
             Autore a3 = new Autore("Nome 3", "Cognome 3");
             Autore a4 = new Autore("Nome 4", "Cognome 4");
@@ -74,18 +183,17 @@ namespace csharp_biblioteca
             l2.Scaffale = s2;
 
             b.Documenti.Add(l2);
-            #endregion
+#endregion
 
-            #region "DVD"
+#region "DVD"
             DVD dvd1 = new DVD("Codice1", "Titolo 3", 2019, "Storia", 130);
             dvd1.Autori.Add(a3);
             dvd1.Scaffale = s3;
 
             b.Documenti.Add(dvd1);
-            #endregion
+#endregion
 
             Utente u1 = new Utente("Nome 1", "Cognome 1", "Telefono 1", "Email 1", "Password 1");
-
             b.Utenti.Add(u1);
             //Questo potrebbe essere il posto migliore: b.SalvaUtenti(nomefile);
 
@@ -207,10 +315,12 @@ namespace csharp_biblioteca
             public bool SaveUtenti(string filename)
             {
                 //salva gli utenti sul file filename
+                return true;
             }
             public bool RestoreUtenti(string filename)
             {
                 //Ricostruisce la lista degli utenti leggendo il file su cui sono stati scritti
+                return true;
             }
 
             public List<Documento> SearchByCodice(string Codice)
