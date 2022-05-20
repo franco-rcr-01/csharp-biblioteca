@@ -152,11 +152,47 @@ namespace csharp_biblioteca
             Environment.Exit(0);
 #endif
 
-            //AddUpdateAppSettings("chiave1", "valore1");
-            //AddUpdateAppSettings("chiave2", "11");
-            //AddUpdateAppSettings("violino", "12");
-            //AddUpdateAppSettings("pianoforte", "spinetta o affini");
+            /***** PER GESTIRE App.config ***********
+            AddUpdateAppSettings("chiave1", "valore1");
+            AddUpdateAppSettings("chiave2", "11");
+            AddUpdateAppSettings("violino", "12");
+            AddUpdateAppSettings("pianoforte", "spinetta o affini");
             ReadAllSettings();
+            Environment.Exit(0); */
+
+            /*********** Alcune funzioni sui file ******************/
+            //File.GetCreationTime(...)
+            //File.GetLastAccessTime(...)
+
+            /*********** Date e similari ******************/
+            var adesso = DateTime.Now;
+            var annifa = new DateTime(1930, 2, 11);
+
+            //differenza tra due tempi?
+            var differenza = adesso - annifa;
+
+            TimeSpan altradiff = new DateTime(2022, 4, 19, 11, 12, 11) - new DateTime(1930, 11, 21, 21, 34, 45);
+
+            //Di che tipo è la differenza tra date? di tipo TimeSpan
+            Console.WriteLine(altradiff);  
+            Console.WriteLine(altradiff.Seconds); //Cosa stampa? 
+            //33386.13:37:26
+            //26 
+            Console.WriteLine(altradiff.TotalSeconds); //E ora cosa stampa? 
+                                                       //33386*24*3600+13*3600+37*60+26 => 2884599446
+
+            using (var stream = File.Open("pippo.dat", FileMode.Create))
+            {
+                using (var bw = new BinaryWriter(stream))
+                {
+                    Int32 uno = 1;
+                    Int64 due = 2;
+                    bw.Write(uno);
+                    bw.Write(due);
+                    bw.Write('3');
+                }
+            }
+
             Environment.Exit(0);
 
             Scaffale s1 = new Scaffale("S001");
